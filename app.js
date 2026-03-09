@@ -202,74 +202,134 @@ function runSlotAnimation(winner) {
 }
 
 // ============================================
-// 🎲 주사위
+// 🎲 주사위 (3D 큐브)
 // ============================================
-const DIE_DOTS = {
-  1: [5],
-  2: [1, 9],
-  3: [1, 5, 9],
-  4: [1, 3, 7, 9],
-  5: [1, 3, 5, 7, 9],
-  6: [1, 3, 4, 6, 7, 9],
-};
 
-function renderDieFace(innerEl, value) {
-  innerEl.innerHTML = '';
-  for (let pos = 1; pos <= 9; pos++) {
+// 3x3 그리드에서 점 위치 (1=좌상단 ~ 9=우하단)
+const DOT_POSITIONS = { 1:[5], 2:[3,7], 3:[1,5,9], 4:[1,3,7,9], 5:[1,3,5,7,9], 6:[1,3,4,6,7,9] };
+
+// 각 면 값이 표시되려면 필요한 큐브 회전 [rx, ry] (도 단위)
+// 검증된 수학적 계산값
+const FACE_SHOW = { 1:[0,0], 2:[90,0], 3:[0,90], 4:[0,-90], 5:[-90,0], 6:[0,180] };
+
+// 큐브 내 면 배치: val=해당 면의 눈 수
+const FACE_PLACEMENTS = [
+  { val:1, cls:'die-face-front',  t:'translateZ(45px)' },
+  { val:6, cls:'die-face-back',   t:'rotateY(180deg) translateZ(45px)' },
+  { val:4, cls:'die-face-right',  t:'rotateY(90deg) translateZ(45px)' },
+  { val:3, cls:'die-face-left',   t:'rotateY(-90deg) translateZ(45px)' },
+  { val:2, cls:'die-face-top',    t:'rotateX(-90deg) translateZ(45px)' },
+  { val:5, cls:'die-face-bottom', t:'rotateX(90deg) translateZ(45px)' },
+];
+
+function buildDiceFace(val) {
+  const face = document.createElement('div');
+  face.className = 'die-face';
+  for (let p = 1; p <= 9; p++) {
     const cell = document.createElement('div');
-    cell.style.cssText = 'display:flex;align-items:center;justify-content:center;';
-    if (DIE_DOTS[value].includes(pos)) {
+    cell.className = 'die-cell';
+    if (DOT_POSITIONS[val].includes(p)) {
       const dot = document.createElement('div');
       dot.className = 'dot';
       cell.appendChild(dot);
     }
-    innerEl.appendChild(cell);
+    face.appendChild(cell);
   }
+  return face;
 }
 
-function rollDice() {
-  const die1 = document.getElementById('die1');
-  const die2 = document.getElementById('die2');
-  const inner1 = document.getElementById('dieInner1');
-  const inner2 = document.getElementById('dieInner2');
-  const diceSum = document.getElementById('diceSum');
-  const rollBtn = document.getElementById('diceRollBtn');
+function buildCube(cubeEl) {
+  cubeEl.innerHTML = '';
+  FACE_PLACEMENTS.forEach(({ val, cls, t }) => {
+    const face = buildDiceFace(val);
+    face.classList.add(cls);
+    face.style.transform = t;
+    cubeEl.appendChild(face);
+  });
+}
 
+const cube1 = document.getElementById('cube1');
+const cube2 = document.getElementById('cube2');
+buildCube(cube1);
+buildCube(cube2);
+
+// 초기 약간 기울어진 자세
+cube1.style.transform = 'rotateX(-15deg) rotateY(20deg)';
+cube2.style.transform = 'rotateX(-15deg) rotateY(-20deg)';
+
+function animateCube(cubeEl, fromX, fromY, toX, toY, duration) {
+  return new Promise(resolve => {
+    let t0 = null;
+    const ease = t => 1 - Math.pow(1 - t, 4); // 강한 ease-out
+
+    function frame(ts) {
+      if (!t0) t0 = ts;
+      const p = Math.min((ts - t0) / duration, 1);
+      const e = ease(p);
+      cubeEl.style.transform =
+        `rotateX(${fromX + (toX - fromX) * e}deg) rotateY(${fromY + (toY - fromY) * e}deg)`;
+      p < 1 ? requestAnimationFrame(frame) : resolve();
+    }
+    requestAnimationFrame(frame);
+  });
+}
+
+let diceRolling = false;
+
+async function rollDice() {
+  if (diceRolling) return;
+  diceRolling = true;
+
+  const rollBtn = document.getElementById('diceRollBtn');
+  const diceSum = document.getElementById('diceSum');
   rollBtn.disabled = true;
   diceSum.textContent = '';
-  die1.classList.add('rolling');
-  die2.classList.add('rolling');
 
-  const result1 = Math.ceil(Math.random() * 6);
-  const result2 = Math.ceil(Math.random() * 6);
+  const r1 = Math.ceil(Math.random() * 6);
+  const r2 = Math.ceil(Math.random() * 6);
 
-  // 굴리는 동안 빠르게 랜덤 숫자 표시
-  let shuffleCount = 0;
-  const shuffleInterval = setInterval(() => {
-    renderDieFace(inner1, Math.ceil(Math.random() * 6));
-    renderDieFace(inner2, Math.ceil(Math.random() * 6));
-    shuffleCount++;
-  }, 80);
+  // 랜덤 스핀 수 (X축, Y축 다르게 → 카오틱한 느낌)
+  const sx1 = 4 + Math.floor(Math.random() * 3);
+  const sy1 = 3 + Math.floor(Math.random() * 4);
+  const sx2 = 3 + Math.floor(Math.random() * 4);
+  const sy2 = 4 + Math.floor(Math.random() * 3);
 
-  setTimeout(() => {
-    clearInterval(shuffleInterval);
-    die1.classList.remove('rolling');
-    die2.classList.remove('rolling');
-    renderDieFace(inner1, result1);
-    renderDieFace(inner2, result2);
+  // 시작 각도를 약간 랜덤하게
+  const s1x = (Math.random() - 0.5) * 30 - 15;
+  const s1y = (Math.random() - 0.5) * 30 + 20;
+  const s2x = (Math.random() - 0.5) * 30 - 15;
+  const s2y = (Math.random() - 0.5) * 30 - 20;
 
-    const sum = result1 + result2;
-    diceSum.textContent = `합계: ${sum}`;
-    rollBtn.disabled = false;
-    navigator.vibrate?.([40, 20, 40]);
-  }, 1200);
+  // 목표 = 당첨 면 각도 + 풀 스핀
+  const [bx1, by1] = FACE_SHOW[r1];
+  const [bx2, by2] = FACE_SHOW[r2];
+  const tx1 = bx1 + 360 * sx1;
+  const ty1 = by1 + 360 * sy1;
+  const tx2 = bx2 + 360 * sx2;
+  const ty2 = by2 + 360 * sy2;
+
+  // 순간 리셋 (transition 없이)
+  cube1.style.transition = cube2.style.transition = 'none';
+  cube1.style.transform = `rotateX(${s1x}deg) rotateY(${s1y}deg)`;
+  cube2.style.transform = `rotateX(${s2x}deg) rotateY(${s2y}deg)`;
+  cube1.getBoundingClientRect(); // force reflow
+
+  const dur = 1800 + Math.random() * 400;
+  await Promise.all([
+    animateCube(cube1, s1x, s1y, tx1, ty1, dur),
+    animateCube(cube2, s2x, s2y, tx2, ty2, dur + (Math.random() - 0.5) * 300),
+  ]);
+
+  const sum = r1 + r2;
+  const remark = sum === 12 ? ' 🎊 최고!' : sum === 2 ? ' 😬 최소...' : sum >= 10 ? ' 🔥' : '';
+  diceSum.textContent = `합계 ${sum}${remark}`;
+
+  navigator.vibrate?.([40, 20, 60]);
+  diceRolling = false;
+  rollBtn.disabled = false;
 }
 
 document.getElementById('diceRollBtn').addEventListener('click', rollDice);
-
-// 초기 주사위 표시
-renderDieFace(document.getElementById('dieInner1'), 1);
-renderDieFace(document.getElementById('dieInner2'), 1);
 
 // ============================================
 // 🎡 돌림판
@@ -361,16 +421,19 @@ function drawWheel(rotation) {
     ctx.lineWidth = 2;
     ctx.stroke();
 
-    // 텍스트
+    // 텍스트 (선명하게)
     ctx.save();
     ctx.rotate(startAngle + arc / 2);
     ctx.textAlign = 'right';
+    const fontSize = n > 7 ? 12 : n > 4 ? 15 : 18;
+    ctx.font = `900 ${fontSize}px "Nunito", sans-serif`;
+    ctx.shadowColor = 'rgba(0,0,0,0.5)';
+    ctx.shadowBlur = 0;
+    ctx.shadowOffsetX = 1;
+    ctx.shadowOffsetY = 1;
     ctx.fillStyle = '#fff';
-    ctx.font = `bold ${n > 6 ? 11 : 14}px Nunito, sans-serif`;
-    ctx.shadowColor = 'rgba(0,0,0,0.3)';
-    ctx.shadowBlur = 3;
-    const label = wheelItems[i].length > 6 ? wheelItems[i].slice(0,6) + '…' : wheelItems[i];
-    ctx.fillText(label, r - 10, 5);
+    const label = wheelItems[i].length > 5 ? wheelItems[i].slice(0,5) + '…' : wheelItems[i];
+    ctx.fillText(label, r - 14, fontSize * 0.38);
     ctx.restore();
   }
 

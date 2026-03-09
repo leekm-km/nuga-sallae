@@ -219,45 +219,63 @@ body {
 }
 
 /* ────────────────────────────────
-   주사위
+   주사위 (3D 큐브)
 ──────────────────────────────── */
 .dice-wrap {
   flex: 1;
   display: flex; flex-direction: column;
   align-items: center; justify-content: center;
-  gap: 24px;
+  gap: 32px;
 }
-.dice-row { display: flex; gap: 28px; }
-.die {
-  width: 100px; height: 100px;
-  border-radius: 18px;
-  background: #fff;
-  box-shadow: 0 6px 24px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.8);
-  display: flex; align-items: center; justify-content: center;
-  perspective: 300px;
+.dice-row {
+  display: flex; gap: 36px;
+  align-items: center; justify-content: center;
 }
-.die-inner {
-  width: 80px; height: 80px;
+
+/* 원근감 컨테이너 */
+.die-wrapper {
+  width: 90px; height: 90px;
+  perspective: 500px;
+  perspective-origin: 50% 20%;
+  filter: drop-shadow(0 8px 20px rgba(0,0,0,0.18));
+}
+
+/* 3D 큐브 */
+.die-cube {
+  width: 90px; height: 90px;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: rotateX(-15deg) rotateY(20deg);
+}
+
+/* 각 면 */
+.die-face {
+  position: absolute; inset: 0;
+  border-radius: 16px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
-  padding: 6px;
-  gap: 2px;
+  padding: 9px; gap: 0;
+}
+.die-face-front  { background: #ffffff; transform: translateZ(45px); }
+.die-face-back   { background: #e8e8e8; transform: rotateY(180deg) translateZ(45px); }
+.die-face-right  { background: #f0f0f0; transform: rotateY(90deg) translateZ(45px); }
+.die-face-left   { background: #f0f0f0; transform: rotateY(-90deg) translateZ(45px); }
+.die-face-top    { background: #f8f8f8; transform: rotateX(-90deg) translateZ(45px); }
+.die-face-bottom { background: #e0e0e0; transform: rotateX(90deg) translateZ(45px); }
+
+.die-cell {
+  display: flex; align-items: center; justify-content: center;
 }
 .dot {
-  width: 16px; height: 16px;
+  width: 14px; height: 14px;
   background: #191F28;
   border-radius: 50%;
-  justify-self: center; align-self: center;
-}
-.die.rolling { animation: diceRoll 0.12s ease infinite alternate; }
-@keyframes diceRoll {
-  from { transform: rotate(-8deg) scale(0.95); box-shadow: 0 3px 12px rgba(0,0,0,0.12); }
-  to   { transform: rotate(8deg) scale(1.05); box-shadow: 0 10px 32px rgba(0,0,0,0.2); }
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
 }
 .dice-sum {
   font-size: 22px; font-weight: 900; color: #4E5968;
-  min-height: 32px;
+  min-height: 32px; text-align: center;
 }
 
 /* ────────────────────────────────
