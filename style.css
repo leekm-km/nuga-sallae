@@ -172,41 +172,51 @@ body {
   position: relative;
   background: #191F28;
   border-radius: 20px;
-  height: 130px;
+  height: 240px;   /* 80px × 3칸 */
   overflow: hidden;
   margin-bottom: 16px;
 }
-.slot-track-wrap {
-  position: absolute; inset: 0;
-  display: flex; align-items: center; justify-content: center;
-  overflow: hidden;
+
+/* 중앙 하이라이트 테두리 */
+.slot-highlight {
+  position: absolute;
+  top: 80px; height: 80px;
+  left: 0; right: 0;
+  border-top: 2px solid #3182f6;
+  border-bottom: 2px solid #3182f6;
+  z-index: 3;
+  pointer-events: none;
 }
+
+/* 위아래 페이드 */
+.slot-fade {
+  position: absolute; left: 0; right: 0;
+  height: 72px; z-index: 2; pointer-events: none;
+}
+.slot-fade-top    { top: 0;    background: linear-gradient(to bottom, #191F28, transparent); }
+.slot-fade-bottom { bottom: 0; background: linear-gradient(to top,   #191F28, transparent); }
+
+/* 세로 트랙 */
 .slot-track {
   display: flex;
-  align-items: center;
-  gap: 0;
-  transition: none;
+  flex-direction: column;
   will-change: transform;
 }
 .slot-item {
   flex-shrink: 0;
-  width: 200px;
+  height: 80px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26px; font-weight: 900;
+  color: rgba(255,255,255,0.55);
+  padding: 0 16px;
   text-align: center;
-  font-size: 28px;
-  font-weight: 900;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+/* 중앙(당첨) 아이템 강조 */
+.slot-item.active {
   color: #fff;
-  padding: 0 10px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 30px;
 }
-.slot-cover {
-  position: absolute; top: 0; bottom: 0; width: 60px;
-  background: linear-gradient(to right, #191F28, transparent);
-  z-index: 2;
-}
-.slot-cover.left  { left: 0; }
-.slot-cover.right { right: 0; transform: scaleX(-1); }
 
 /* ────────────────────────────────
    주사위

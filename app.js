@@ -142,12 +142,20 @@ document.getElementById('slotRetryBtn').addEventListener('click', () => {
 });
 
 function runSlotAnimation(winner) {
-  // 슬롯 아이템 무한 반복 배열 만들기 (최소 30개)
-  const pool = [];
-  while (pool.length < 40) pool.push(...slotItems);
-  pool.push(winner); // 마지막이 당첨자
+  const ITEM_H  = 80;   // 아이템 한 칸 높이 (px)
+  const WIN_IDX = 40;   // 당첨자가 배치될 인덱스 (앞에 충분한 아이템)
 
+  // 트랙 배열 구성: 랜덤 아이템 × 39 → 당첨자 → 랜덤 2개 (하단 여백용)
+  const pool = [];
+  for (let i = 0; i < WIN_IDX; i++)
+    pool.push(slotItems[Math.floor(Math.random() * slotItems.length)]);
+  pool.push(winner);                                                   // index 40
+  for (let i = 0; i < 2; i++)
+    pool.push(slotItems[Math.floor(Math.random() * slotItems.length)]);
+
+  // DOM 렌더
   slotTrack.innerHTML = '';
+  slotTrack.style.transform = 'translateY(0)';
   pool.forEach(name => {
     const el = document.createElement('div');
     el.className = 'slot-item';
@@ -155,28 +163,33 @@ function runSlotAnimation(winner) {
     slotTrack.appendChild(el);
   });
 
-  const itemW = 200; // slot-item width + gap
-  const totalItems = pool.length;
-  const endX = -(totalItems - 1) * itemW; // 마지막(당첨자) 위치
-
+  // 당첨자(WIN_IDX)가 중앙 슬롯(top=80)에 오는 translateY 계산
+  // 중앙 슬롯 top = 80px → winner.top (화면기준) = WIN_IDX*ITEM_H + translateY = 80
+  // translateY = 80 - WIN_IDX * ITEM_H
+  const finalY = 80 - WIN_IDX * ITEM_H;   // = 80 - 3200 = -3120
+  const startY = 0;
+  const duration = 3000;
   let startTime = null;
-  const duration = 2400; // ms
 
-  function easeOut(t) { return 1 - Math.pow(1 - t, 4); }
+  // ease-out: 빠르게 시작 → 천천히 멈춤
+  function easeOut(t) { return 1 - Math.pow(1 - t, 3); }
 
   function frame(ts) {
     if (!startTime) startTime = ts;
-    const elapsed = ts - startTime;
-    const progress = Math.min(elapsed / duration, 1);
-    const easedProgress = easeOut(progress);
-    const currentX = endX * easedProgress;
+    const t = Math.min((ts - startTime) / duration, 1);
+    const y = startY + (finalY - startY) * easeOut(t);
+    slotTrack.style.transform = `translateY(${y}px)`;
 
-    slotTrack.style.transform = `translateX(${currentX}px)`;
+    // 현재 중앙 슬롯에 있는 아이템 강조
+    const centerIdx = Math.round((80 - y) / ITEM_H);
+    slotTrack.querySelectorAll('.slot-item').forEach((el, i) => {
+      el.classList.toggle('active', i === centerIdx);
+    });
 
-    if (progress < 1) {
+    if (t < 1) {
       requestAnimationFrame(frame);
     } else {
-      // 완료
+      // 완료 → 당첨자 박스 표시
       slotWinnerText.textContent = winner;
       slotWinnerBox.classList.remove('hidden');
       slotWinnerBox.querySelector('.winner-label').textContent = randomPhrase();
