@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#ffffff">
+  <title>누가 살래? 🍽️</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- 참가자 입력 화면 -->
+  <div id="inputScreen" class="screen active">
+    <div class="top-bar">
+      <h1 class="app-title">🍽️ 누가 살래?</h1>
+      <p class="app-sub">오늘 쏘는 사람을 정해드려요</p>
+    </div>
+
+    <div class="card">
+      <div class="section-label">참가자</div>
+      <div id="nameList"></div>
+      <button id="addBtn" class="add-btn">+ 이름 추가</button>
+    </div>
+
+    <button id="drawBtn" class="btn-primary big-btn" disabled>🎰 뽑기!</button>
+  </div>
+
+  <!-- 뽑기 애니메이션 화면 -->
+  <div id="drawScreen" class="screen">
+    <div class="draw-wrap">
+      <div class="draw-label">두구두구두구...</div>
+      <div id="slotName" class="slot-name"></div>
+      <div class="draw-emoji">🎲</div>
+    </div>
+  </div>
+
+  <!-- 결과 화면 -->
+  <div id="resultScreen" class="screen">
+    <div id="confettiWrap"></div>
+
+    <div class="result-top">
+      <div class="result-emoji">🎉</div>
+      <div class="result-label">오늘은</div>
+      <div id="resultName" class="result-name"></div>
+      <div class="result-sub">님이 쏩니다!</div>
+    </div>
+
+    <div class="card split-card">
+      <div class="section-label">N빵 계산기</div>
+      <div class="split-row">
+        <div class="split-field">
+          <label>총 금액</label>
+          <div class="input-wrap">
+            <input type="number" id="totalAmount" placeholder="0" inputmode="numeric">
+            <span class="unit">원</span>
+          </div>
+        </div>
+        <div class="split-field">
+          <label>인원 수</label>
+          <div class="input-wrap">
+            <input type="number" id="splitCount" placeholder="2" inputmode="numeric" min="1">
+            <span class="unit">명</span>
+          </div>
+        </div>
+      </div>
+      <div id="splitResult" class="split-result hidden">
+        <span id="splitAmount" class="split-amount"></span>
+        <span class="split-desc">원씩 내면 돼요</span>
+      </div>
+      <button id="tossBtn" class="toss-btn hidden">
+        <img src="https://static.toss.im/png-icons/securities/icn-sec-toss.png"
+             onerror="this.style.display='none'" alt="" class="toss-icon">
+        토스로 보내기
+      </button>
+    </div>
+
+    <div class="bottom-btns">
+      <button id="retryBtn" class="btn-secondary">다시 뽑기</button>
+      <button id="reshuffleBtn" class="btn-primary">같은 멤버로 다시</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
