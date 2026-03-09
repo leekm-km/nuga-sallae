@@ -11,76 +11,163 @@
 </head>
 <body>
 
-  <!-- 참가자 입력 화면 -->
-  <div id="inputScreen" class="screen active">
-    <div class="top-bar">
+  <!-- ── 홈 ── -->
+  <div id="homeScreen" class="screen active">
+    <div class="home-top">
       <h1 class="app-title">🍽️ 누가 살래?</h1>
-      <p class="app-sub">오늘 쏘는 사람을 정해드려요</p>
+      <p class="app-sub">무엇을 해볼까요?</p>
     </div>
-
-    <div class="card">
-      <div class="section-label">참가자</div>
-      <div id="nameList"></div>
-      <button id="addBtn" class="add-btn">+ 이름 추가</button>
+    <div class="menu-grid">
+      <div class="menu-card" data-goto="slot">
+        <div class="menu-icon">🎰</div>
+        <div class="menu-name">슬롯머신</div>
+        <div class="menu-desc">항목 중 하나를<br>뽑아요</div>
+      </div>
+      <div class="menu-card" data-goto="dice">
+        <div class="menu-icon">🎲</div>
+        <div class="menu-name">주사위</div>
+        <div class="menu-desc">주사위 2개를<br>굴려요</div>
+      </div>
+      <div class="menu-card" data-goto="wheel">
+        <div class="menu-icon">🎡</div>
+        <div class="menu-name">돌림판</div>
+        <div class="menu-desc">돌림판에서<br>뽑아요</div>
+      </div>
+      <div class="menu-card" data-goto="split">
+        <div class="menu-icon">🧮</div>
+        <div class="menu-name">N빵</div>
+        <div class="menu-desc">금액을<br>나눠요</div>
+      </div>
     </div>
-
-    <button id="drawBtn" class="btn-primary big-btn" disabled>🎰 뽑기!</button>
   </div>
 
-  <!-- 뽑기 애니메이션 화면 -->
-  <div id="drawScreen" class="screen">
-    <div class="draw-wrap">
-      <div class="draw-label">두구두구두구...</div>
-      <div id="slotName" class="slot-name"></div>
-      <div class="draw-emoji">🎲</div>
-    </div>
-  </div>
-
-  <!-- 결과 화면 -->
-  <div id="resultScreen" class="screen">
-    <div id="confettiWrap"></div>
-
-    <div class="result-top">
-      <div class="result-emoji">🎉</div>
-      <div class="result-label">오늘은</div>
-      <div id="resultName" class="result-name"></div>
-      <div class="result-sub">님이 쏩니다!</div>
+  <!-- ── 슬롯머신 ── -->
+  <div id="slotScreen" class="screen">
+    <div class="screen-header">
+      <button class="back-btn" data-home>←</button>
+      <h2>🎰 슬롯머신</h2>
+      <div style="width:40px"></div>
     </div>
 
-    <div class="card split-card">
-      <div class="section-label">N빵 계산기</div>
-      <div class="split-row">
-        <div class="split-field">
-          <label>총 금액</label>
-          <div class="input-wrap">
-            <input type="number" id="totalAmount" placeholder="0" inputmode="numeric">
-            <span class="unit">원</span>
-          </div>
+    <!-- 입력 단계 -->
+    <div id="slotInputStage">
+      <div class="card">
+        <div class="section-label">항목 입력</div>
+        <div id="slotItemList"></div>
+        <button id="slotAddBtn" class="add-btn">+ 항목 추가</button>
+      </div>
+      <button id="slotStartBtn" class="btn-primary big-btn" disabled>🎰 뽑기 시작!</button>
+    </div>
+
+    <!-- 결과 단계 -->
+    <div id="slotResultStage" class="hidden">
+      <div class="slot-display">
+        <div class="slot-track-wrap">
+          <div id="slotTrack" class="slot-track"></div>
         </div>
-        <div class="split-field">
-          <label>인원 수</label>
-          <div class="input-wrap">
-            <input type="number" id="splitCount" placeholder="2" inputmode="numeric" min="1">
-            <span class="unit">명</span>
-          </div>
+        <div class="slot-cover left"></div>
+        <div class="slot-cover right"></div>
+      </div>
+      <div id="slotWinnerBox" class="winner-box hidden">
+        <div class="winner-label">당첨!</div>
+        <div id="slotWinnerText" class="winner-text"></div>
+      </div>
+      <div class="bottom-btns">
+        <button id="slotRetryBtn" class="btn-secondary">↺ 다시 뽑기</button>
+        <button class="btn-primary" data-home>🏠 홈</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 주사위 ── -->
+  <div id="diceScreen" class="screen">
+    <div class="screen-header">
+      <button class="back-btn" data-home>←</button>
+      <h2>🎲 주사위</h2>
+      <div style="width:40px"></div>
+    </div>
+    <div class="dice-wrap">
+      <div class="dice-row">
+        <div class="die" id="die1"><div class="die-inner" id="dieInner1"></div></div>
+        <div class="die" id="die2"><div class="die-inner" id="dieInner2"></div></div>
+      </div>
+      <div id="diceSum" class="dice-sum"></div>
+    </div>
+    <div class="bottom-btns">
+      <button id="diceRollBtn" class="btn-primary big-btn">🎲 굴리기!</button>
+    </div>
+  </div>
+
+  <!-- ── 돌림판 ── -->
+  <div id="wheelScreen" class="screen">
+    <div class="screen-header">
+      <button class="back-btn" data-home>←</button>
+      <h2>🎡 돌림판</h2>
+      <div style="width:40px"></div>
+    </div>
+
+    <!-- 입력 단계 -->
+    <div id="wheelInputStage">
+      <div class="card">
+        <div class="section-label">항목 입력</div>
+        <div id="wheelItemList"></div>
+        <button id="wheelAddBtn" class="add-btn">+ 항목 추가</button>
+      </div>
+      <button id="wheelGoBtn" class="btn-primary big-btn" disabled>🎡 돌림판으로!</button>
+    </div>
+
+    <!-- 돌림판 단계 -->
+    <div id="wheelSpinStage" class="hidden">
+      <div class="wheel-wrap">
+        <div class="wheel-pointer">▼</div>
+        <canvas id="wheelCanvas"></canvas>
+      </div>
+      <div id="wheelWinnerBox" class="winner-box hidden">
+        <div class="winner-label">당첨!</div>
+        <div id="wheelWinnerText" class="winner-text"></div>
+      </div>
+      <div class="bottom-btns">
+        <button id="wheelEditBtn" class="btn-secondary">✏️ 항목 수정</button>
+        <button id="wheelSpinBtn" class="btn-primary">돌리기!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── N빵 ── -->
+  <div id="splitScreen" class="screen">
+    <div class="screen-header">
+      <button class="back-btn" data-home>←</button>
+      <h2>🧮 N빵 계산기</h2>
+      <div style="width:40px"></div>
+    </div>
+    <div class="card split-card">
+      <div class="split-field">
+        <label>총 금액</label>
+        <div class="input-wrap">
+          <input type="number" id="totalAmount" placeholder="0" inputmode="numeric">
+          <span class="unit">원</span>
+        </div>
+      </div>
+      <div class="split-field" style="margin-top:12px">
+        <label>인원 수</label>
+        <div class="input-wrap">
+          <input type="number" id="splitCount" placeholder="2" inputmode="numeric" min="1">
+          <span class="unit">명</span>
         </div>
       </div>
       <div id="splitResult" class="split-result hidden">
-        <span id="splitAmount" class="split-amount"></span>
-        <span class="split-desc">원씩 내면 돼요</span>
+        <div class="split-amount-row">
+          <span class="split-label">1인당</span>
+          <span id="splitAmount" class="split-amount"></span>
+          <span class="split-unit">원</span>
+        </div>
       </div>
-      <button id="tossBtn" class="toss-btn hidden">
-        <img src="https://static.toss.im/png-icons/securities/icn-sec-toss.png"
-             onerror="this.style.display='none'" alt="" class="toss-icon">
-        토스로 보내기
-      </button>
     </div>
-
-    <div class="bottom-btns">
-      <button id="retryBtn" class="btn-secondary">다시 뽑기</button>
-      <button id="reshuffleBtn" class="btn-primary">같은 멤버로 다시</button>
-    </div>
+    <button id="tossBtn" class="toss-btn hidden">💙 토스로 보내기</button>
   </div>
+
+  <!-- 컨페티 -->
+  <div id="confettiWrap"></div>
 
   <script src="app.js"></script>
 </body>

@@ -4,333 +4,327 @@ body {
   font-family: 'Nunito', -apple-system, sans-serif;
   background: #f5f6f8;
   min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
   overflow: hidden;
 }
 
-/* ── 화면 전환 ── */
+/* ────────────────────────────────
+   화면 전환
+──────────────────────────────── */
 .screen {
   display: none;
   flex-direction: column;
-  min-height: 100dvh;
-  padding: 0 20px 40px;
-  animation: fadeUp 0.3s ease;
+  height: 100dvh;
+  padding: 0 20px 32px;
+  overflow-y: auto;
+  animation: fadeUp 0.25s ease;
 }
 .screen.active { display: flex; }
 
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(18px); }
+  from { opacity: 0; transform: translateY(14px); }
   to   { opacity: 1; transform: translateY(0); }
 }
+.hidden { display: none !important; }
 
-/* ── 상단 타이틀 ── */
-.top-bar {
-  padding: 52px 0 24px;
+/* ────────────────────────────────
+   홈 화면
+──────────────────────────────── */
+.home-top {
+  padding: 56px 0 28px;
   text-align: center;
 }
-.app-title {
-  font-size: 26px;
-  font-weight: 900;
-  color: #191F28;
-}
-.app-sub {
-  font-size: 14px;
-  color: #8B95A1;
-  margin-top: 6px;
-  font-weight: 600;
-}
+.app-title { font-size: 28px; font-weight: 900; color: #191F28; }
+.app-sub   { font-size: 14px; font-weight: 600; color: #8B95A1; margin-top: 6px; }
 
-/* ── 카드 ── */
+.menu-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.menu-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px 16px;
+  text-align: center;
+  cursor: pointer;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  transition: transform 0.15s, box-shadow 0.15s;
+  user-select: none;
+}
+.menu-card:active { transform: scale(0.95); box-shadow: 0 1px 6px rgba(0,0,0,0.08); }
+.menu-icon  { font-size: 38px; margin-bottom: 10px; }
+.menu-name  { font-size: 16px; font-weight: 900; color: #191F28; margin-bottom: 6px; }
+.menu-desc  { font-size: 12px; font-weight: 600; color: #8B95A1; line-height: 1.5; }
+
+/* ────────────────────────────────
+   서브 화면 공통 헤더
+──────────────────────────────── */
+.screen-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 52px 0 20px;
+}
+.screen-header h2 { font-size: 20px; font-weight: 900; color: #191F28; }
+.back-btn {
+  width: 40px; height: 40px;
+  border: none; border-radius: 50%;
+  background: #F2F4F6;
+  font-size: 18px; font-weight: 700; color: #4E5968;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.15s;
+}
+.back-btn:active { background: #E5E8EB; }
+
+/* ────────────────────────────────
+   카드
+──────────────────────────────── */
 .card {
   background: #fff;
   border-radius: 20px;
   padding: 20px;
-  margin-bottom: 16px;
+  margin-bottom: 14px;
   box-shadow: 0 2px 12px rgba(0,0,0,0.06);
 }
 .section-label {
-  font-size: 12px;
-  font-weight: 800;
-  color: #8B95A1;
-  letter-spacing: 0.5px;
-  margin-bottom: 14px;
-  text-transform: uppercase;
+  font-size: 11px; font-weight: 800; color: #8B95A1;
+  letter-spacing: 0.6px; text-transform: uppercase;
+  margin-bottom: 12px;
 }
 
-/* ── 이름 목록 ── */
-.name-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+/* ────────────────────────────────
+   항목 입력 (슬롯 & 돌림판)
+──────────────────────────────── */
+.item-row {
+  display: flex; align-items: center; gap: 10px;
   margin-bottom: 10px;
 }
-.name-input {
+.item-input {
   flex: 1;
   border: 1.5px solid #E5E8EB;
   border-radius: 12px;
   padding: 12px 14px;
-  font-size: 16px;
-  font-family: 'Nunito', sans-serif;
-  font-weight: 700;
-  color: #191F28;
-  outline: none;
+  font-size: 16px; font-family: 'Nunito', sans-serif; font-weight: 700;
+  color: #191F28; background: #FAFAFA; outline: none;
   transition: border-color 0.15s;
-  background: #FAFAFA;
 }
-.name-input:focus { border-color: #3182f6; background: #fff; }
-.name-input::placeholder { color: #C4C9CF; font-weight: 600; }
-
+.item-input:focus { border-color: #3182f6; background: #fff; }
+.item-input::placeholder { color: #C4C9CF; font-weight: 600; }
 .del-btn {
-  width: 32px; height: 32px;
-  border: none;
-  border-radius: 50%;
-  background: #F2F4F6;
-  color: #8B95A1;
-  font-size: 16px;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  transition: background 0.15s;
+  width: 32px; height: 32px; border: none; border-radius: 50%;
+  background: #F2F4F6; color: #8B95A1; font-size: 16px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: background 0.15s;
 }
-.del-btn:hover { background: #FFE0E0; color: #e53935; }
-
+.del-btn:active { background: #FFE0E0; color: #e53935; }
 .add-btn {
-  width: 100%;
-  padding: 12px;
-  border: 1.5px dashed #C4C9CF;
-  border-radius: 12px;
-  background: none;
-  color: #8B95A1;
-  font-size: 14px;
-  font-family: 'Nunito', sans-serif;
-  font-weight: 700;
-  cursor: pointer;
-  margin-top: 4px;
-  transition: all 0.15s;
+  width: 100%; padding: 12px;
+  border: 1.5px dashed #C4C9CF; border-radius: 12px;
+  background: none; color: #8B95A1;
+  font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 700;
+  cursor: pointer; margin-top: 2px; transition: all 0.15s;
 }
-.add-btn:hover { border-color: #3182f6; color: #3182f6; }
+.add-btn:active { border-color: #3182f6; color: #3182f6; }
 
-/* ── 버튼 ── */
+/* ────────────────────────────────
+   버튼
+──────────────────────────────── */
 .btn-primary {
-  background: #3182f6;
-  color: #fff;
-  border: none;
-  border-radius: 14px;
-  padding: 16px;
-  font-size: 17px;
-  font-family: 'Nunito', sans-serif;
-  font-weight: 800;
-  cursor: pointer;
-  transition: background 0.15s, transform 0.1s, opacity 0.15s;
-  width: 100%;
+  background: #3182f6; color: #fff;
+  border: none; border-radius: 14px;
+  padding: 16px; width: 100%;
+  font-size: 16px; font-family: 'Nunito', sans-serif; font-weight: 800;
+  cursor: pointer; transition: background 0.15s, transform 0.1s;
 }
 .btn-primary:active { transform: scale(0.97); }
-.btn-primary:disabled { background: #D1D6DB; cursor: not-allowed; opacity: 1; }
-
+.btn-primary:disabled { background: #D1D6DB; cursor: not-allowed; }
 .btn-secondary {
-  background: #F2F4F6;
-  color: #4E5968;
-  border: none;
-  border-radius: 14px;
-  padding: 16px;
-  font-size: 15px;
-  font-family: 'Nunito', sans-serif;
-  font-weight: 800;
-  cursor: pointer;
-  transition: background 0.15s, transform 0.1s;
-  width: 100%;
+  background: #F2F4F6; color: #4E5968;
+  border: none; border-radius: 14px;
+  padding: 16px; width: 100%;
+  font-size: 15px; font-family: 'Nunito', sans-serif; font-weight: 800;
+  cursor: pointer; transition: background 0.15s, transform 0.1s;
 }
 .btn-secondary:active { transform: scale(0.97); }
-
 .big-btn { margin-top: auto; }
+.bottom-btns { display: flex; flex-direction: column; gap: 10px; margin-top: auto; }
 
-/* ── 뽑기 애니메이션 화면 ── */
-#drawScreen {
-  background: linear-gradient(160deg, #3182f6 0%, #1c5ecc 100%);
-  justify-content: center;
+/* ────────────────────────────────
+   당첨 박스 (공통)
+──────────────────────────────── */
+.winner-box {
+  background: #fff;
+  border-radius: 20px;
+  padding: 20px;
+  text-align: center;
+  margin: 16px 0;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  animation: fadeUp 0.3s ease;
+}
+.winner-label { font-size: 13px; font-weight: 800; color: #3182f6; margin-bottom: 6px; }
+.winner-text  { font-size: 32px; font-weight: 900; color: #191F28; }
+
+/* ────────────────────────────────
+   슬롯머신
+──────────────────────────────── */
+.slot-display {
+  position: relative;
+  background: #191F28;
+  border-radius: 20px;
+  height: 130px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+.slot-track-wrap {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+}
+.slot-track {
+  display: flex;
   align-items: center;
-  padding: 40px 24px;
+  gap: 0;
+  transition: none;
+  will-change: transform;
 }
-.draw-wrap { text-align: center; }
-.draw-label {
-  font-size: 18px;
-  font-weight: 700;
-  color: rgba(255,255,255,0.8);
-  margin-bottom: 32px;
-  letter-spacing: 2px;
-}
-.slot-name {
-  font-size: 52px;
+.slot-item {
+  flex-shrink: 0;
+  width: 200px;
+  text-align: center;
+  font-size: 28px;
   font-weight: 900;
   color: #fff;
-  min-height: 72px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-shadow: 0 4px 20px rgba(0,0,0,0.2);
-  transition: transform 0.05s;
-}
-.draw-emoji {
-  font-size: 42px;
-  margin-top: 32px;
-  animation: spin 0.4s linear infinite;
-}
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
-}
-
-/* ── 결과 화면 ── */
-#resultScreen {
-  background: #f5f6f8;
-  position: relative;
-}
-.result-top {
-  text-align: center;
-  padding: 52px 0 32px;
-}
-.result-emoji {
-  font-size: 56px;
-  margin-bottom: 16px;
-  animation: bounce 0.6s ease;
-}
-@keyframes bounce {
-  0%   { transform: scale(0); }
-  60%  { transform: scale(1.2); }
-  100% { transform: scale(1); }
-}
-.result-label {
-  font-size: 16px;
-  font-weight: 700;
-  color: #8B95A1;
-  margin-bottom: 6px;
-}
-.result-name {
-  font-size: 42px;
-  font-weight: 900;
-  color: #191F28;
-  margin-bottom: 6px;
-}
-.result-sub {
-  font-size: 18px;
-  font-weight: 700;
-  color: #4E5968;
-}
-
-/* ── N빵 계산기 ── */
-.split-card { margin-bottom: 16px; }
-.split-row {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 0;
-}
-.split-field {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.split-field label {
-  font-size: 12px;
-  font-weight: 800;
-  color: #8B95A1;
-}
-.input-wrap {
-  display: flex;
-  align-items: center;
-  border: 1.5px solid #E5E8EB;
-  border-radius: 12px;
-  background: #FAFAFA;
+  padding: 0 10px;
+  white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
+}
+.slot-cover {
+  position: absolute; top: 0; bottom: 0; width: 60px;
+  background: linear-gradient(to right, #191F28, transparent);
+  z-index: 2;
+}
+.slot-cover.left  { left: 0; }
+.slot-cover.right { right: 0; transform: scaleX(-1); }
+
+/* ────────────────────────────────
+   주사위
+──────────────────────────────── */
+.dice-wrap {
+  flex: 1;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 24px;
+}
+.dice-row { display: flex; gap: 28px; }
+.die {
+  width: 100px; height: 100px;
+  border-radius: 18px;
+  background: #fff;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.15), inset 0 1px 0 rgba(255,255,255,0.8);
+  display: flex; align-items: center; justify-content: center;
+  perspective: 300px;
+}
+.die-inner {
+  width: 80px; height: 80px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  padding: 6px;
+  gap: 2px;
+}
+.dot {
+  width: 16px; height: 16px;
+  background: #191F28;
+  border-radius: 50%;
+  justify-self: center; align-self: center;
+}
+.die.rolling { animation: diceRoll 0.12s ease infinite alternate; }
+@keyframes diceRoll {
+  from { transform: rotate(-8deg) scale(0.95); box-shadow: 0 3px 12px rgba(0,0,0,0.12); }
+  to   { transform: rotate(8deg) scale(1.05); box-shadow: 0 10px 32px rgba(0,0,0,0.2); }
+}
+.dice-sum {
+  font-size: 22px; font-weight: 900; color: #4E5968;
+  min-height: 32px;
+}
+
+/* ────────────────────────────────
+   돌림판
+──────────────────────────────── */
+.wheel-wrap {
+  position: relative;
+  display: flex; flex-direction: column; align-items: center;
+  margin: 8px 0 16px;
+}
+.wheel-pointer {
+  font-size: 28px;
+  color: #191F28;
+  margin-bottom: -8px;
+  z-index: 2;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+}
+#wheelCanvas {
+  border-radius: 50%;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+}
+
+/* ────────────────────────────────
+   N빵
+──────────────────────────────── */
+.split-card { flex: 0 0 auto; }
+.split-field { display: flex; flex-direction: column; gap: 8px; }
+.split-field label { font-size: 12px; font-weight: 800; color: #8B95A1; }
+.input-wrap {
+  display: flex; align-items: center;
+  border: 1.5px solid #E5E8EB; border-radius: 12px;
+  background: #FAFAFA; overflow: hidden;
   transition: border-color 0.15s;
 }
 .input-wrap:focus-within { border-color: #3182f6; background: #fff; }
 .input-wrap input {
-  flex: 1;
-  border: none;
-  background: none;
-  padding: 12px 4px 12px 12px;
-  font-size: 16px;
-  font-family: 'Nunito', sans-serif;
-  font-weight: 700;
-  color: #191F28;
-  outline: none;
-  width: 0;
+  flex: 1; border: none; background: none;
+  padding: 14px 4px 14px 14px;
+  font-size: 18px; font-family: 'Nunito', sans-serif; font-weight: 800;
+  color: #191F28; outline: none; width: 0;
 }
-.input-wrap input::placeholder { color: #C4C9CF; }
-.unit {
-  padding: 0 10px;
-  font-size: 13px;
-  font-weight: 700;
-  color: #8B95A1;
-  white-space: nowrap;
-}
+.input-wrap input::placeholder { color: #C4C9CF; font-weight: 600; font-size: 16px; }
+.unit { padding: 0 14px; font-size: 14px; font-weight: 700; color: #8B95A1; white-space: nowrap; }
 
 .split-result {
-  margin-top: 16px;
-  background: #EBF3FF;
-  border-radius: 12px;
-  padding: 14px 16px;
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
+  margin-top: 20px;
+  background: linear-gradient(135deg, #3182f6, #1c5ecc);
+  border-radius: 16px;
+  padding: 20px;
 }
-.split-result.hidden { display: none; }
-.split-amount {
-  font-size: 24px;
-  font-weight: 900;
-  color: #3182f6;
-}
-.split-desc {
-  font-size: 14px;
-  font-weight: 700;
-  color: #4E5968;
-}
-
-/* ── 토스 버튼 ── */
-.toss-btn {
-  display: flex;
-  align-items: center;
+.split-amount-row {
+  display: flex; align-items: baseline; gap: 6px;
   justify-content: center;
-  gap: 8px;
-  width: 100%;
-  margin-top: 12px;
-  padding: 14px;
-  background: #191F28;
-  color: #fff;
-  border: none;
-  border-radius: 12px;
-  font-size: 15px;
-  font-family: 'Nunito', sans-serif;
-  font-weight: 800;
-  cursor: pointer;
-  transition: background 0.15s, transform 0.1s;
+}
+.split-label { font-size: 14px; font-weight: 700; color: rgba(255,255,255,0.8); }
+.split-amount { font-size: 36px; font-weight: 900; color: #fff; }
+.split-unit { font-size: 16px; font-weight: 700; color: rgba(255,255,255,0.8); }
+
+.toss-btn {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px; width: 100%; margin-top: 14px;
+  padding: 16px; background: #191F28; color: #fff;
+  border: none; border-radius: 14px;
+  font-size: 15px; font-family: 'Nunito', sans-serif; font-weight: 800;
+  cursor: pointer; transition: transform 0.1s;
 }
 .toss-btn:active { transform: scale(0.97); }
-.toss-btn.hidden { display: none; }
-.toss-icon { width: 22px; height: 22px; border-radius: 6px; }
 
-/* ── 하단 버튼 ── */
-.bottom-btns {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: auto;
-}
-
-/* ── 컨페티 ── */
+/* ────────────────────────────────
+   컨페티
+──────────────────────────────── */
 #confettiWrap {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 100;
-  overflow: hidden;
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 999; overflow: hidden;
 }
 .confetti-piece {
-  position: absolute;
-  width: 10px; height: 10px;
-  border-radius: 2px;
+  position: absolute; border-radius: 2px;
   animation: confettiFall linear forwards;
 }
 @keyframes confettiFall {
