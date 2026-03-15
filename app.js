@@ -19,8 +19,13 @@ document.querySelectorAll('.menu-card').forEach(el =>
     showScreen(id);
     if (el.dataset.goto === 'slot')  initSlot();
     if (el.dataset.goto === 'wheel') initWheel();
+    sbLog('nuga-sallae', 'feature_use', { feature: el.dataset.goto });
   })
 );
+
+// 앱 진입 시 유저 등록 + 로그
+sbInitUser();
+sbLog('nuga-sallae', 'app_open');
 
 // ============================================
 // 유머 문구 풀
